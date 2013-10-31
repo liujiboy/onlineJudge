@@ -2,69 +2,35 @@
 LANG:C++
 TASK:milk
 */
-#include<iostream>
-#include<vector>
-#include<fstream>
-#include<algorithm>
-#include<string>
+#include <fstream>
+#include <iostream>
+#define MAXPRICE 1001
 using namespace std;
-class Farmer{
-private:
-	int price;
-	int amount;
-public:
-	Farmer(int price,int amount)
+int main() {
+	ifstream fin ("milk.in");
+	ofstream fout ("milk.out");
+	unsigned int  needed, price, paid, farmers, amount, milk[MAXPRICE];
+	for(int i=0;i<MAXPRICE;i++)
 	{
-		this->price=price;
-		this->amount=amount;
+		milk[i]=0;
 	}
-	int getPrice() const
-	{
-		return this->price;
-	}
-	int getAmount() const
-	{
-		return this->amount;
-	}
-};
-bool cmp(const Farmer&f1,const Farmer&f2)
-{
-	return f1.getPrice()<f2.getPrice();
-}
-int main(int argc,char** argv)
-{
-	ifstream in("milk.in");
-	ofstream out("milk.out");
-	int totalAmount,farmerNum;
-	in>>totalAmount>>farmerNum;
-	vector<Farmer> farmers;
-	for(int i=0;i<farmerNum;i++)
-	{
-		int price,amount;
-		in>>price>>amount;
-		Farmer f(price,amount);
-		farmers.push_back(f);
-	}
-	sort(farmers.begin(),farmers.end(),cmp);
-	int totalPrice=0;
-	for(int i=0;i<farmers.size();i++)
-	{
-		Farmer f=farmers[i];
-		if(totalAmount-f.getAmount()>0)
-		{
-			totalAmount-=f.getAmount();
-			totalPrice+=f.getPrice()*f.getAmount();
-		}
-		else
-		{
-			totalPrice+=totalAmount*f.getPrice();
-			totalAmount=0;
-			break;	
+	paid = 0;
+	fin>>needed>>farmers;
+	for(int i = 0;i<farmers;i++){
+		fin>>price>>amount;
+		milk[price] += amount;   
+	} 
+	for(int i = 0; i<MAXPRICE;i++){
+		if(needed>=milk[i]) {
+			needed -= milk[i];
+			paid += milk[i] * i;
+		} else if(milk[i]>0) {
+			paid += i*needed;
+			break;    
 		}
 	}
-	out<<totalPrice<<endl;
-	in.close();
-	out.close();
+	fout << paid << endl; 
+	fin.close();
+	fout.close();
 	return 0;
-
 }
