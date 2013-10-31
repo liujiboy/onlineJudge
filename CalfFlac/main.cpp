@@ -27,7 +27,7 @@ inline void readFile(char* file,letter* letters,ifstream&in,int&flen,int&llen)
 		flen++;
 	}
 }
-char toLowerCase(char c)
+inline char toLowerCase(char c)
 {
 	if(c>='A'&&c<='Z')
 	{
@@ -37,7 +37,7 @@ char toLowerCase(char c)
 	return c;
 	
 }
-bool isPal(letter* letters,int i,int palLen)
+inline bool isPal(letter* letters,int i,int palLen)
 {
 	for(int head=i,tail=i+palLen-1;head<=tail;head++,tail--)
 	{
@@ -50,7 +50,7 @@ bool isPal(letter* letters,int i,int palLen)
 }
 inline void findPal(letter* letters,int llen,int&palLen,int&start,int&end)
 {
-	for(palLen=llen;palLen>=1;palLen--)
+	for(palLen=llen<MAXPALLEN?llen:MAXPALLEN;palLen>=1;palLen--)
 	{
 		for(int i=0;i<llen-palLen+1;i++)
 		{
