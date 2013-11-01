@@ -37,51 +37,46 @@ inline void readFile(char* file,letter* letters,ifstream&in,int&flen,int&llen)
 		flen++;
 	}
 }
-
-bool isPal(letter* letters,int i,int palLen)
+int findpal(letter* letters,int left,int right,int llen)
 {
-	for(int head=i,tail=i+palLen-1;head<=tail;head++,tail--)
+	int len=0;
+	for(int i=left,j=right;i>=0&&j<=llen-1;i--,j++,len++)
 	{
-		if(letters[head].c!=letters[tail].c)
-			return false;
-		//cout<<toLowerCase(letters[head].c)<<" "<<toLowerCase(letters[tail].c)<<endl;			
+		if(letters[i].c!=letters[j].c)
+			break;
 	}
-	//cout<<i<<"  "<<palLen<<endl;
-	return true;
-}
-inline void findPal(letter* letters,int llen,int&palLen,int&start,int&end)
-{
-	for(palLen=llen>MAXPALLEN?MAXPALLEN:llen;palLen>=1;palLen--)
-	{
-		for(int i=0;i<llen-palLen+1;i++)
-		{
-			if(isPal(letters,i,palLen))
-			{
-				start=letters[i].pos;
-				end=letters[i+palLen-1].pos;
-				return;
-			}
-		}
-	}
+	return len;
 }
 int main() {
 	ifstream fin ("calfflac.in");
 	ofstream fout ("calfflac.out");
 	char file[MAXFILELEN];
 	letter letters[MAXFILELEN];
-	letter pal[MAXPALLEN];
 	int flen=0,llen=0;
 	readFile(file,letters,fin,flen,llen);
-	/*for(int i=0;i<flen;i++)
-		cout<<file[i];
-	cout<<endl;
+	int pallen=0,start,end;
 	for(int i=0;i<llen;i++)
-		cout<<letters[i].c<<" "<<letters[i].pos<<endl;
-	*/
-	int palLen,start,end;
-	findPal(letters,llen,palLen,start,end);
-	fout<<palLen<<endl;
-	for(int i=start;i<=end;i++)
+	{
+		// i is the center
+		int len=findpal(letters,i-1,i+1,llen);
+		if(2*len+1>pallen)
+		{
+			pallen=2*len+1;
+			start=i-len;
+			end=i+len;
+		}
+		// i is the first elem of letf side
+		len=findpal(letters,i,i+1,llen);
+		if(2*len>pallen)
+		{
+			pallen=2*len;
+			start=i-len+1;
+			end=i+len;
+		}
+	}
+
+	fout<<pallen<<endl;
+	for(int i=letters[start].pos;i<=letters[end].pos;i++)
 		fout<<file[i];
 	fout<<endl;
 	fin.close();
