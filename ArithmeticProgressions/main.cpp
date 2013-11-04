@@ -27,8 +27,10 @@ class Ariprog:public Prob{
 private:
 	int m;
 	int n;
-	int s[125001];
-	int len;
+	bool s[125001];
+	int numbers[125001];
+	int ncount;
+	int max;
 public:
 	Ariprog():Prob("ariprog")
 	{
@@ -37,31 +39,38 @@ public:
 		for(int i=0;i<m+1;i++)
 		{
 			for(int j=0;j<m+1;j++)
-				s[i*i+j*j]=1;
+			{
+				s[i*i+j*j]=true;
+			}
 		}
-		len=m*m*2+1;	
+		for(int i=0;i<125001;i++)
+		{
+			if(s[i])
+			{
+				numbers[ncount++]=i;
+			}
+		}
+		/*for(int i=0;i<ncount;i++)
+			cout<<numbers[i]<<endl;*/
+		max=m*m*2;	
 	}	
 	void run()
 	{
 		bool none=true;
-		for(int b=1;b<len/(n-1)+1;b++)
-			for(int a=0;a<len-(n-1)*b+1;a++)
+		for(int b=1;b<=max/(n-1);b++)
+		{
+			for(int i=0;numbers[i]<=max-(n-1)*b;i++)
 			{
+				int a=numbers[i];
 				int flag=1;
-				for(int k=0;k<n;k++)
+				for(int k=n-1;k>=0;k--)
 				{
 					int v=a+b*k;
-					if(v<len)
+					//cout<<a<<" "<<b<<endl;
+					if(!s[v])
 					{
-						if(s[v]!=1)
-						{
 							flag=0;
 							break;
-						}
-					}else
-					{
-						flag=0;
-						break;
 					}
 				}
 				if(flag==1)
@@ -69,7 +78,8 @@ public:
 					fout<<a<<" "<<b<<endl;
 					none=false;
 				}
-			}	
+			}
+		}	
 		if(none)
 			fout<<"NONE"<<endl;
 	}
