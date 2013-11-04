@@ -106,30 +106,13 @@ int type2(rect r1,rect r2,rect r3,rect r4,int&w,int&h)
 	h=r3.h+r4.w;
 	return w*h;
 }
-int type7(rect r1,rect r2,rect r3,rect r4,int&w,int&h)
-{
-	if(r4.h>r2.w+r3.w)
-		return 0;
-	if(r2.h>r3.h)
-		return 0;
-	if(r1.h>r3.h+r4.w)
-		return 0;
-	w=r1.w+r2.w+r3.w;
-	h=r3.h+r4.w;
-	return w*h;
-}
 int type3(rect r1,rect r2,rect r3,rect r4,int&w,int&h)
 {
-	if(r4.h>r1.w+r2.w)
+	if(r4.h<r2.w)
 		return 0;
-	if(r2.h+r4.w>r3.h)
-		return 0;
-	if(r1.h+r4.w>r3.h)
-		return 0;
-	if(r1.h+r4.w>r2.h+r4.w)
-		return 0;
-	w=r1.w+r2.w+r3.w;
-	h=r3.h;
+	w=r1.w+r2.w+r3.w>r4.h+r3.w?r1.w+r2.w+r3.w:r4.h+r3.w;
+	h=r1.h+r4.w>r2.h+r4.w?r1.h+r4.w:r2.h+r4.w;
+	h=h>r3.h?h:r3.h;
 	return w*h;
 }
 int type4(rect r1,rect r2,rect r3,rect r4,int&w,int&h)
@@ -216,9 +199,6 @@ void perm(int* nums,int i,int j)
 						re.insert(m,w,h);
 						m=type6(r1,r2,r3,r4,w,h);
 						cout<<"type6 "<<m<<" "<<w<<" "<<h<<" "<<r1<<r2<<r3<<r4<<endl;
-						re.insert(m,w,h);
-						m=type7(r1,r2,r3,r4,w,h);
-						cout<<"type7 "<<m<<" "<<w<<" "<<h<<" "<<r1<<r2<<r3<<r4<<endl;
 						re.insert(m,w,h);
 
 					}
