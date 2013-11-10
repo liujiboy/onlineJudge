@@ -13,55 +13,21 @@ def flood_fill(castle,rooms,n,m,rnum):
                     flag=1
                     rooms[row][col]=rnum
                     wall=castle[row][col]
-                    if wall==1:
-                        setroom(rooms,row-1,col)
-                        setroom(rooms,row,col+1)
-                        setroom(rooms,row+1,col)
-                    elif wall==2:
-                        setroom(rooms,row,col+1)
-                        setroom(rooms,row+1,col)
+                    if wall&1==0:
                         setroom(rooms,row,col-1)
-                    elif wall==4:
+                    if wall&2==0:
                         setroom(rooms,row-1,col)
-                        setroom(rooms,row+1,col)
-                        setroom(rooms,row,col-1)
-                    elif wall==8:
-                        setroom(rooms,row-1,col)
+                    if wall&4==0:
                         setroom(rooms,row,col+1)
-                        setroom(rooms,row,col-1)
-                    elif wall==1+2:
-                        setroom(rooms,row,col+1)
+                    if wall&8==0:
                         setroom(rooms,row+1,col)
-                    elif wall==1+4:
-                        setroom(rooms,row-1,col)
-                        setroom(rooms,row+1,col)
-                    elif wall==1+8:
-                        setroom(rooms,row-1,col)
-                        setroom(rooms,row,col+1)
-                    elif wall==2+4:
-                        setroom(rooms,row,col-1)
-                        setroom(rooms,row+1,col)
-                    elif wall==2+8:
-                        setroom(rooms,row,col-1)
-                        setroom(rooms,row,col+1)
-                    elif wall==4+8:
-                        setroom(rooms,row-1,col)
-                        setroom(rooms,row,col-1)
-                    elif wall==1+2+4:
-                        setroom(rooms,row+1,col)
-                    elif wall==1+2+8:
-                        setroom(rooms,row,col+1)
-                    elif wall==1+4+8:
-                        setroom(rooms,row-1,col)
-                    elif wall==2+4+8:
-                        setroom(rooms,row,col-1)
 f=open("castle.in")
 line=f.readline()
 numbers=re.split(" ",line)
 m=int(numbers[0])
 n=int(numbers[1])
-castle=np.zeros((n,m))
-rooms=np.zeros((n,m))
+castle=np.zeros((n,m),dtype="i4")
+rooms=np.zeros((n,m),dtype="i4")
 for row in range(0,n):
     line=f.readline()
     numbers=re.split(" ",line)
@@ -94,7 +60,7 @@ for row in range(n-1,-1,-1):
     for col in range(0,m):
         wall=castle[row][col]
         num=rooms[row][col]
-        if wall==3 or wall==6 or wall==10 or wall==7 or wall==14 or wall==11 or wall==15:
+        if wall&2:
             if row-1>=0:
                 nnum=rooms[row-1][col]
                 if nnum<>num:
@@ -103,7 +69,7 @@ for row in range(n-1,-1,-1):
                         mrow=row
                         mcol=col
                         c='N'
-        if wall==5 or wall==6 or wall==12 or wall==7 or wall==14 or wall==13 or wall==15:
+        if wall&4:
             if col+1<m:
                 nnum=rooms[row][col+1]
                 if nnum<>num:
