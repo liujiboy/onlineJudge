@@ -1,3 +1,4 @@
+#!/usr/local/bin/python
 import numpy as np
 def printboard(board,n):
     global solution
