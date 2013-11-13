@@ -8,8 +8,8 @@ TASK:sort3
 #include <iostream>
 #include <cmath>
 using namespace std;
-ifstream fin("hamming.in");
-ofstream fout("hamming.out");
+ifstream fin("sort3.in");
+ofstream fout("sort3.out");
 template<class T>
 class print{
 private:
@@ -39,53 +39,62 @@ public:
 		return a<b;
 	}
 };
-int diff(int n1,int n2,int b)
+int sc=0;
+bool findswap(vector<int>&list,int i,int v,int start,int end)
 {
-	int d=n1^n2;
-	int count=0;
-	int i=0;
-	while(d!=0&&i<b)
+	for(int j=start;j<end;j++)
 	{
-		if(d&0x1)
-			count++;
-		d=d>>1;
-		i++;
+		if(list[j]==v)
+		{
+			//swap i,j
+			int tmp=list[i];
+			list[i]=list[j];
+			list[j]=tmp;
+			sc++;
+			return true;
+		}
 	}
-	return count;
+	return false;
 }
 int main() {
-	int n,b,d;
-	fin>>n>>b>>d;
-	int max=pow(2,b);
-	vector<int> v;
-	v.push_back(0);
-	for(int i=1;v.size()<n&&i<max;i++)
+	int n;
+	fin>>n;
+	vector<int> list(n);
+	vector<int> m(4);
+	for(int i=0;i<n;i++)
 	{
-		bool flag=true;
-		for(int j=0;j<v.size();j++)
-		{
-			if(diff(v[j],i,b)<d)
-			{
-				flag=false;
-				break;
-			}
-		}
-		if(flag)
-			v.push_back(i);
-//		for_each(v.begin(),v.end(),print<int>(false));
-//		cin.get();
+		fin>>list[i];
 	}
-	for(int i=0;i<v.size();i++)
+	for(int i=0;i<n;i++)
 	{
-		if((i+1)%10==0||i==v.size()-1)
+		m[list[i]]++;
+	}
+	//for_each(m.begin(),m.end(),print<int>());
+	//sort 1
+	for(int i=0;i<m[1];i++)
+	{
+		if(list[i]==2)
 		{
-			fout<<v[i]<<endl;
-		}else
-		{
-			fout<<v[i]<<" ";
+			if(!findswap(list,i,1,m[1],m[1]+m[2]))
+				findswap(list,i,1,m[1]+m[2],m[1]+m[2]+m[3]);
 		}
+		if(list[i]==3)
+		{
+			if(!findswap(list,i,1,m[1]+m[2],m[1]+m[2]+m[3]))
+				findswap(list,i,1,m[1],m[1]+m[2]);
 
-	}	
+		}
+	}
+	//sort 2
+	for(int i=m[1];i<m[1]+m[2];i++)
+	{
+		if(list[i]==3)
+		{
+			findswap(list,i,2,m[1]+m[2],m[1]+m[2]+m[3]);
+		}
+	}
+	//for_each(list.begin(),list.end(),print<int>(false));
+	fout<<sc<<endl;
 	fin.close();
 	fout.close();
 	return 0;
