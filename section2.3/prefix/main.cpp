@@ -61,7 +61,6 @@ class comp{
 int maxp[200000];
 bool start_with(const string&sequence,const string&s,int start)
 {
-	//cout<<"search:"<<start<<" "<<s<<endl;
 	if(start+s.size()>sequence.size())
 		return false;
 	for(int i=0;i<s.size();i++)
@@ -71,27 +70,7 @@ bool start_with(const string&sequence,const string&s,int start)
 	}
 	return true;
 }
-int search(const string&sequence,int start,const vector<string>&primitives)
-{
-	if(start>=sequence.size())
-		return 0;
-	if(maxp[start]!=-1)
-		return maxp[start];
-	maxp[start]=0;
-	for(int i=0;i<primitives.size();i++)
-	{
-		string s=primitives[i];
-		if(start_with(sequence,s,start))
-		{
-			int len=s.size()+search(sequence,start+s.size(),primitives);
-			if(maxp[start]<len)
-				maxp[start]=len;
-		}
-	}
-	return maxp[start];
-}
 int main() {
-	init(maxp,200000,-1);
 	string s;
 	vector<string> primitives;
 	string sequence;
@@ -107,10 +86,24 @@ int main() {
 		sequence+=s;
 		fin>>s;
 	}
-	for(int i=sequence.size()-1;i>=0;i--)
+	for(int start=sequence.size()-1;start>=0;start--)
 	{
-		search(sequence,i,primitives);
+		for(int i=0;i<primitives.size();i++)
+		{
+			string s=primitives[i];
+			if(start_with(sequence,s,start))
+			{
+				int len;
+				if(start+s.size()>=sequence.size())
+					len=s.size();
+				else
+					len=s.size()+maxp[start+s.size()];
+				if(maxp[start]<len)
+					maxp[start]=len;
+			}
+		}
 	}
+
 	fout<<maxp[0]<<endl;
 	fin.close();
 	fout.close();
