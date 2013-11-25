@@ -62,23 +62,42 @@ class comp{
 int coins[25];
 int v;
 int n;
-unsigned long money[10001];
+signed long long solutions[25][10001];
+signed long long search(int i,int remain)
+{
+	
+	if(remain==0)
+	{
+		return 1;
+	}else if(remain<0)
+	{
+		return 0;
+	}else if(i==v)
+	{
+		return 0;
+	}
+	if(solutions[i][remain]!=-1)
+		return solutions[i][remain];
+	int coin=coins[i];
+	signed long long r=0;
+	for(int j=0;j<=remain/coin;j++)
+	{
+		r+=search(i+1,remain-j*coin);
+	}
+	solutions[i][remain]=r;
+	return r;
+}
 int main() {
-	int v;
 	fin>>v>>n;
 	for(int i=0;i<v;i++)
 	{
 		fin>>coins[i];
 	}
-	money[1]=1;
-	for(int i=2;i<=n;i++)
-	{
-		for(int j=1;j<=i/2;j++)
-		{
-			money[i]+=money[j]*
-		}
-	}
-	print(coins,v);	
+	for(int i=0;i<25;i++)
+		for(int j=0;j<10001;j++)
+			solutions[i][j]=-1;
+	search(0,n);
+	fout<<solutions[0][n]<<endl;
 	fin.close();
 	fout.close();
 	return 0;
