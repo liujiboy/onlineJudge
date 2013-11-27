@@ -62,7 +62,7 @@ class comp{
 int len=0;
 int a[101][101];
 int b[101][101];
-int f(int i,int j)
+/*int f(int i,int j)
 {
 	if(b[i][j]!=-1)
 		return b[i][j];
@@ -93,7 +93,7 @@ int f(int i,int j)
 		b[i][j]=0;
 	}
 	return b[i][j];
-}
+}*/
 int main() {
 	int n;
 	fin>>n;
@@ -119,18 +119,48 @@ int main() {
 				b[i][j]=1;
 			}else
 			{
-				b[i][j]=-1;
+				if(a[i][j]>50)
+					b[i][j]=1;
 			}
 		}
+	n=1;
+	while(n)
+	{
+		n=0;
+		for(int i=1;i<=len;i++)
+			for(int j=1;j<=len;j++)
+			{
+				if(b[i][j]==0)
+				{
+					int r=0;
+					for(int k=1;k<=len;k++)
+					{
+						if(i!=k&&j!=k&&b[i][k]==1)
+						{
+							/*if(i==34)
+							{
+								printf("(%d,%d)=%d\n",k,j,a[k][j]);
+							}*/
+							r+=a[k][j];
+						}
+
+					}
+					r+=a[i][j];
+					if(r>50)
+					{
+						b[i][j]=1;
+						n++;
+					}
+				}
+			}
+	}
 	for(int i=1;i<=len;i++)
 	{
 		for(int j=1;j<=len;j++)
 		{
-		//	cout<<"test "<<i<<" "<<j<<endl;
-		//	cin.get();
 			if(i!=j)
 			{
-				if(f(i,j))
+				if(b[i][j])
 				{
 					fout<<i<<" "<<j<<endl;
 				}
