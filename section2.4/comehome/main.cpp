@@ -11,66 +11,81 @@ TASK:comehome
 #include <sstream>
 #include <queue>
 #include <map>
+#include <cctype>
 using namespace std;
 ifstream fin("comehome.in");
 ofstream fout("comehome.out");
-int n;
-int d;
-vector<int> digits;
-map<int,int> remainders;
-map<int,int>::iterator it;
-int main() {
-	fin>>n>>d;
-	bool flag=true;
-	int i=0;
-	while(n!=0)
+int path[26*2][26*2];
+bool cows[26];
+int toIndex(char c,bool *cows)
+{
+	int index;
+	if(c>='A'&&c<='Z')
 	{
-		digits.push_back(n/d);
-		i++;
-		n=(n%d)*10;
-		it=remainders.find(n);
-		if(it==remainders.end())
+		index=c-'A'+26;
+		cows[c-'A']=true;
+	}else
+	{
+		index=c-'a';
+	}
+	return index;
+}
+int main() {
+	int n;
+	fin>>n;
+	fin.get();
+	for(int i=0;i<n;i++)
+	{
+		char s,e;
+		int d;
+		fin.get(s);
+		fin.get();
+		fin.get(e);
+		fin>>d;
+		int start=toIndex(s,cows);
+		int end=toIndex(e,cows);
+		if(path[start][end]!=0)
 		{
-			remainders[n]=i;
+			if(path[start][end]>d)
+			{
+				path[start][end]=d;
+				path[end][start]=d;
+
+			}
 		}else
 		{
-			break;
-		}	
+			path[start][end]=d;
+			path[end][start]=d;
+		}
+		fin.get();
 	}
-	stringstream ss;
-	string num;
-	if(digits.size()==1)
-	{
-		ss<<digits[0]<<"."<<"0"<<endl;
-	}else
-	{	
-		ss<<digits[0]<<".";
-		if(it!=remainders.end())
-		{
-			for(int i=1;i<it->second;i++)
+	for(int k=0;k<26*2;k++)
+		for(int i=0;i<26*2;i++)
+			for(int j=0;j<26*2;j++)
 			{
-				ss<<digits[i];
+				if(path[i][k]!=0&&path[k][j]!=0)
+				{
+					if(path[i][j]==0||path[i][j]>path[i][k]+path[k][j])
+					{
+						path[i][j]=path[i][k]+path[k][j];
+					}
+					
+				}
 			}
-			ss<<"(";
-			for(int i=it->second;i<digits.size();i++)
-				ss<<digits[i];
-			ss<<")";
-		}
-		else
-		{
-			for(int i=1;i<digits.size();i++)
-				ss<<digits[i];
-		}
-	}
-	ss>>num;
-	for(int i=0;i<num.size();i++)
+	int min=-1;
+	int p=-1;
+	for(int i=26;i<26*2-1;i++)
 	{
-		if(i!=0&&i%76==0)
-			fout<<endl;
-		fout<<num[i];
-	}
-	fout<<endl;
-
+		if(cows[i-26])
+		{
+			if(min==-1||min>path[i][51])
+			{
+				p=i-26;
+				min=path[i][51];
+			}
+		}
+	}	
+	fout<<(char)('A'+p)<<" "<<min<<endl;
 	fin.close();
 	fout.close();
 	return 0;
