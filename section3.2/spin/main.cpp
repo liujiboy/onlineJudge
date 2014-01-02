@@ -35,15 +35,15 @@ struct area{
 				r.end=other.end;
 			}
 			return true;
-		}else if(other.end<=end&&other.end>=start)
+		}else if(start<=other.end&&start>=other.start)
 		{
-			r.end=end;
-			if(start>=other.start)
+			r.start=start;
+			if(end>=other.end)
 			{
-				r.start=start;
+				r.end=other.end;
 			}else
 			{
-				r.start=other.start;
+				r.end=end;
 			}
 			return true;
 		}else
@@ -80,7 +80,7 @@ struct wedge{
 	}
 };
 struct wheel{
-	int num;
+	int num=0;
 	int speed;
 	wedge wedges[5];
 	void add(const wedge&w)
@@ -118,7 +118,7 @@ void intersect(vector<area>&v1,vector<area>&v2,vector<area>&v3)
 		for(int j=0;j<v2.size();j++)
 		{
 			area r;
-			bool f=v1[i].intersect(v2[i],r);
+			bool f=v1[i].intersect(v2[j],r);
 			if(f)
 				v3.push_back(r);
 		}
@@ -141,6 +141,8 @@ int main() {
 	bool stop=false;
 	for(int i=0;i<360&&!stop;i++)
 	{
+		//if(i==357)
+		//	cout<<i<<endl;
 		vector<area> v1;
 		vector<area> v2;
 		vector<area> v3;
@@ -157,22 +159,22 @@ int main() {
 		}
 		vector<area> v1v2;
 		intersect(v1,v2,v1v2);	
-		/*cout<<"v1"<<endl;
-		for(int k=0;k<v1.size();k++)
-		{
-			cout<<v1[k].start<<" "<<v1[k].end<<endl;
-		}
-		cout<<"v2"<<endl;
-		for(int k=0;k<v2.size();k++)
-		{
-			cout<<v2[k].start<<" "<<v2[k].end<<endl;
-		}
-		cout<<"v1v2"<<endl;
-		for(int k=0;k<v1v2.size();k++)
-		{
-			cout<<v1v2[k].start<<" "<<v1v2[k].end<<endl;
-		}
-		cin.get();*/
+		//cout<<"v1"<<endl;
+		//for(int k=0;k<v1.size();k++)
+		//{
+		//	cout<<v1[k].start<<" "<<v1[k].end<<endl;
+		//}
+		//cout<<"v2"<<endl;
+		//for(int k=0;k<v2.size();k++)
+		//{
+		//	cout<<v2[k].start<<" "<<v2[k].end<<endl;
+		//}
+		//cout<<"v1v2"<<endl;
+		//for(int k=0;k<v1v2.size();k++)
+		//{
+		//	cout<<v1v2[k].start<<" "<<v1v2[k].end<<endl;
+		//}
+		//cin.get();
 		if(v1v2.size()==0)
 			continue;
 		vector<area> v1v2v3;
