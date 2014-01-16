@@ -53,19 +53,21 @@ void C(string&s)
 	s[2]=t;	
 }
 bool flag=false;
-void f(string s);
-void testfind(string&s)
+void f(string s,string path);
+void testfind(string&s,string path)
 {
+	//cout<<s<<":"<<path<<endl;
+	//cin.get();
 	if(ms[s]==0)
 	{
 		if(s==input)
 		{
-			cout<<"find"<<endl;
+			cout<<path<<endl;
 			flag=true;
 		}
 		else{
 			ms[s]=1;
-			f(s);
+			f(s,path);
 		}
 	}else
 	{
@@ -73,25 +75,25 @@ void testfind(string&s)
 	}
 
 }
-void f(string s)
+void f(string s,string path)
 {
 	string sa=s;
 	if(!flag)
 	{
 		A(sa);
-		testfind(sa);
+		testfind(sa,path+"A");
 	}
 	string sb=s;
 	if(!flag)
 	{
 		B(sb);
-		testfind(sb);
+		testfind(sb,path+"B");
 	}
 	string sc=s;
 	if(!flag)
 	{
 		C(sc);
-		testfind(sc);
+		testfind(sc,path+"C");
 	}
 	
 	
@@ -99,8 +101,14 @@ void f(string s)
 int main(){
 
 	string s="12345678";
-	fin>>input;	
-	f(s);
+	ms[s]=1;
+	char c;
+	for(int i=0;i<8;i++)
+	{
+		fin>>c;
+		input+=c;
+	}
+	f(s,"");
 	fin.close();
 	fout.close();
 	return 0;
