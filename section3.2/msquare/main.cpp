@@ -1,7 +1,7 @@
 /*
 LANG:C++
 TASK:msquare
-*/
+ */
 #include <fstream>
 #include <vector>
 #include <algorithm>
@@ -15,7 +15,7 @@ TASK:msquare
 using namespace std;
 ifstream fin("msquare.in");
 ofstream fout("msquare.out");
-map<string,int> ms;
+map<string,string> ms;
 string input;
 void swap(char&a,char&b)
 {
@@ -52,63 +52,70 @@ void C(string&s)
 	s[5]=s[2];
 	s[2]=t;	
 }
-bool flag=false;
-void f(string s,string path);
-void testfind(string&s,string path)
-{
-	//cout<<s<<":"<<path<<endl;
-	//cin.get();
-	if(ms[s]==0)
-	{
-		if(s==input)
-		{
-			cout<<path<<endl;
-			flag=true;
-		}
-		else{
-			ms[s]=1;
-			f(s,path);
-		}
-	}else
-	{
-		
-	}
-
-}
-void f(string s,string path)
-{
-	string sa=s;
-	if(!flag)
-	{
-		A(sa);
-		testfind(sa,path+"A");
-	}
-	string sb=s;
-	if(!flag)
-	{
-		B(sb);
-		testfind(sb,path+"B");
-	}
-	string sc=s;
-	if(!flag)
-	{
-		C(sc);
-		testfind(sc,path+"C");
-	}
-	
-	
-}
 int main(){
 
 	string s="12345678";
-	ms[s]=1;
 	char c;
 	for(int i=0;i<8;i++)
 	{
 		fin>>c;
 		input+=c;
 	}
-	f(s,"");
+	ms[s]="";
+	queue<string> q;
+	q.push(s);
+	if(s!=input)
+	{
+		while(!q.empty())
+		{
+			string sa=q.front();
+			A(sa);
+			string sb=q.front();
+			B(sb);
+			string sc=q.front();
+			C(sc);
+			if(ms[sa]=="")
+			{
+				q.push(sa);
+				ms[sa]=ms[q.front()]+"A";
+				if(sa==input)
+					break;
+			}
+			if(ms[sb]=="")
+			{
+				q.push(sb);
+				ms[sb]=ms[q.front()]+"B";
+				if(sb==input)
+					break;
+			}
+			if(ms[sc]=="")
+			{ 
+				q.push(sc);
+				ms[sc]=ms[q.front()]+"C";
+				if(sc==input)
+					break;
+			}
+			q.pop();
+		}
+	}
+	fout<<ms[input].size()<<endl;
+	if(ms[input].size()==0)
+	{
+		fout<<endl;
+	}
+	else
+	{
+		int i=0;
+		for(;i<ms[input].size();i++)
+		{
+			fout<<ms[input][i];
+			if(i%60==0&&i!=0)
+				fout<<endl;
+
+		}
+		if(i%60!=0)
+			fout<<endl;
+	}
 	fin.close();
 	fout.close();
 	return 0;
