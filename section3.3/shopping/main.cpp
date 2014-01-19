@@ -20,67 +20,48 @@ ofstream fout("shopping.out");
 struct product{
 	int c;
 	int k;
-	int p;
-
 };
 struct offer{
-	vector<product> products;
+	int n;
+	product products[6];
 	int p;
 };
-vector<offer> offers;
-product order[1000];
-vector<int> keys;
-int best[55556];
+offer offers[100];
+int offer_size;
+int order[1000];
+int order_size;
+int many[6];
+int price[6];
+int best[6][6][6][6][6];
 int cal();
 int sub(offer& of)
 {
-	for(int i=0;i<of.products.size();i++)
+	for(int i=1;i<=of.n;i++)
 	{
 			product pr=of.products[i];
-			if(order[pr.c].k<pr.k)
+			if(many[order[pr.c]]<pr.k)
 				return 0x7FFFFFFF;
 	}
-	for(int i=0;i<of.products.size();i++)
+	for(int i=1;i<=of.n;i++)
 	{
 			product pr=of.products[i];
-			order[pr.c].k-=pr.k;	
+			many[order[pr.c]]-=pr.k;	
 	}
 
 	int total=cal()+of.p;
-	for(int i=0;i<of.products.size();i++)
+	for(int i=1;i<=of.n;i++)
 	{
 			product pr=of.products[i];
-			order[pr.c].k+=pr.k;	
+			many[order[pr.c]]+=pr.k;	
 	}
-/*	for(map<int,product>::iterator it=products.begin();it!=products.end();it++)
-		{
-			product pr=it->second;
-			cout<<pr.c<<" "<<pr.k<<endl;
-		}
-	cout<<"total:"<<total<<endl;
-	cin.get();*/
 	return total;
-}
-int getkey()
-{
-	int key=0;
-	for(int i=0;i<keys.size();i++)
-	{
-		int index=keys[i];
-		key=key*10+order[index].k;
-	}
-	return key;
 }
 int cal()
 {
-	/*string pid=tostring(products);
-	if(tmp[pid]!=0)
-		return tmp[pid];*/
-	int key=getkey();
-	if(best[key]!=0)
-		return best[key];
+	if(best[many[1]][many[2]][many[3]][many[4]][many[5]]!=0)
+		return best[many[1]][many[2]][many[3]][many[4]][many[5]];
 	int min_p=0x7FFFFFFF;
-	for(int i=0;i<offers.size();i++)
+	for(int i=1;i<=offer_size;i++)
 	{
 		offer of=offers[i];
 		int total=sub(of);
@@ -90,42 +71,35 @@ int cal()
 	if(min_p==0x7FFFFFFF)
 	{
 		int total=0;
-		for(int i=1;i<=999;i++)
+		for(int i=1;i<=6;i++)
 		{
-			product pr=order[i];
-			if(pr.k!=0)
-				total+=pr.p*pr.k;
+			total+=many[i]*price[i];
 		}
 		min_p=total;
 	
 	}
-	best[key]=min_p;
+	best[many[1]][many[2]][many[3]][many[4]][many[5]]=min_p;
 	return min_p;
 }
 int main() {
-	int n;
-	fin>>n;
-	for(int i=0;i<n;i++)
+	fin>>offer_size;
+	for(int i=1;i<=offer_size;i++)
 	{
-		int k;
-		fin>>k;
-		offer of;
-		for(int j=0;j<k;j++)
+		fin>>offers[i].n;
+		for(int j=1;j<=offers[i].n;j++)
 		{
-			product pr;
-			fin>>pr.c>>pr.k;
-			of.products.push_back(pr);
+			fin>>offers[i].products[j].c>>offers[i].products[j].k;			
 		}
-		fin>>of.p;
-		offers.push_back(of);
+		fin>>offers[i].p;
 	}
-	fin>>n;
-	for(int i=0;i<n;i++)
+	fin>>order_size;
+	for(int i=1;i<=order_size;i++)
 	{
-		product pr;
-		fin>>pr.c>>pr.k>>pr.p;
-		keys.push_back(pr.c);
-		order[pr.c]=pr;
+		int c,k,p;
+		fin>>c>>k>>p;
+		order[c]=i;
+		many[i]=k;
+		price[i]=p;
 	}
 	fout<<cal()<<endl;
 	fin.close();
