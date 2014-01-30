@@ -24,16 +24,29 @@ int main() {
 	fin>>N>>T>>M;
 	for(int i=1;i<=N;i++)
 		fin>>songs[i];
-	for(int i=1;i<=N;i++)
-		for(int j=1;j<=M;j++)
-			for(int k=1;k<=T;k++)
+	int best=0;
+	for(int a=1;a<=M;a++)
+		for(int b=0;b<=T;b++)
+			for(int c=0;c<=N;c++)
 			{
-				if(k<songs[i])
-					A[i][j][k]=max(A[i-1][j][k],A[i-1][j-1][T]);
-				else
-					A[i][j][k]=max(A[i-1][j][k-songs[i]],A[i-1][j-1][T])+1;
+				for(int d=c+1;d<=N;d++)
+				{
+					if(b+songs[d]>T)
+					{
+						if(A[a][b][c]+1>A[a+1][songs[d]][d])
+							A[a+1][songs[d]][d]=A[a][b][c]+1;
+					}
+					else
+					{
+						if(A[a][b][c]+1>A[a][b+songs[d]][d])
+							A[a][b+songs[d]][d]=A[a][b][c]+1;
+					}
+				
+				}
+				if(A[a][b][c]>best)
+						best=A[a][b][c];
 			}
-	fout<<A[N][M][T]<<endl;
+	fout<<best<<endl;
 	fin.close();
 	fout.close();
 	return 0;
