@@ -18,7 +18,7 @@ using namespace std;
 ifstream fin("nuggets.in");
 ofstream fout("nuggets.out");
 int N;
-int numbers[100001];
+bool numbers[256*256];
 int nuggets[11];
 int indices[11];
 int gcd(int a, int b)
@@ -38,6 +38,7 @@ int main() {
 	for(int i=1;i<=N;i++)
 	{
 		fin>>nuggets[i];
+		numbers[nuggets[i]]=1;
 		if(nuggets[i]==1)
 		{
 			fout<<0<<endl;
@@ -52,37 +53,25 @@ int main() {
 		fout<<0<<endl;
 		exit(0);
 	}
-	int count=0;
-	int max_i;
-	for(int c=1;c<=100000;c++)
+	for(int i=1;i<256*256;i++)
 	{
-		int min_n=100000;
-		for(int i=1;i<=N;i++)
+		if(numbers[i]==1)
 		{
-			int n=numbers[indices[i]]+nuggets[i];
-			if(n<min_n)
-				min_n=n;
-		}
-		numbers[c]=min_n;
-		if(numbers[c]-numbers[c-1]==1)
-		{
-			count++;
-		}
-		else
-		{
-			max_i=numbers[c]-1;
-			count=0;
-		}
-		if(count==256)
-			break;
-		for(int i=1;i<=N;i++)
-		{
-			int n=numbers[indices[i]]+nuggets[i];
-			if(n==numbers[c])
-				indices[i]++;
+			for(int j=1;j<=N;j++)
+			{
+				if(i+nuggets[j]<256*256)
+					numbers[i+nuggets[j]]=1;
+			}
 		}
 	}
-	fout<<max_i<<endl;
+	for(int i=256*256-1;i>=1;i--)
+	{
+		if(numbers[i]!=1)
+		{
+			fout<<i<<endl;
+			break;
+		}	
+	}
 	fin.close();
 	fout.close();
 	return 0;
