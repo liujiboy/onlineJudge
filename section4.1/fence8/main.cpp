@@ -2,81 +2,89 @@
 LANG:C++
 TASK:fence8
 */
-#include <list>
-#include <fstream>
-#include <vector>
-#include <iostream>
-#include <cstdio>
-#include <cmath>
-#include <sstream>
-#include <map>
-#include <cctype>
-#include <stack>
-#include <algorithm>
-#include <cstring>
-using namespace std;
-ifstream fin("fence8.in");
-ofstream fout("fence8.out");
-int boards[51];
-int rails[1024];
-int boards_len;
-int rails_len;
-int max_cuts=0;
-int c=0;
-int find_max_cuts(int level)
+#include<stdio.h>
+#include<stdlib.h>
+int v[55],wx[55],lwh[1111],ans=0,n,m,sumv=0,maxstep,space;
+int minlwh[1111],pp,max1[55],l,r,mid;
+int cmp(const void *a,const void *b)
 {
-	c++;
-	if(level>rails_len)
+	return *(int *)a-*(int *)b;
+}
+int cmp2(const void *a,const void *b)
+{
+	return -*(int *)a+*(int *)b;
+}
+int sou(int step,int pos)
+{
+
+	if(step<1)
+		return 1;
+	if(space>sumv-minlwh[mid])
 		return 0;
-	int max_cuts_level=0;
-	bool flag=true;
-	for(int j=1;j<=boards_len;j++)
+
+	/*if(step>mid){
+		return 0;
+	}*/
+	int i,j,k,f[1111]={0};
+	for(i=n;i>=pos;i--)
 	{
-		if(boards[j]>=rails[level])
+
+		if(v[i]>=lwh[step])
 		{
-			flag=false;
-			boards[j]-=rails[level];
-			int cuts=find_max_cuts(level+1);
-	//		cout<<level<<"\t"<<cuts<<endl;
-			boards[j]+=rails[level];
-			if(cuts+1>max_cuts_level)
+			//if(f[v[i]]==1)continue;//此优化巨牛X，可惜空间太。。开个f[11111]
+			//else f[v[i]]=1;
+			v[i]-=lwh[step];
+			if(v[i]<lwh[1])
+				space+=v[i];
+			int ok=0;
+			if(lwh[step]==lwh[step-1])
 			{
-				max_cuts_level=cuts+1;
-				if(max_cuts_level>max_cuts)
-					max_cuts=max_cuts_level;
-				if(max_cuts_level>=rails_len-level+1||max_cuts>=rails_len-level+1)
-				{
-					cout<<"ok"<<endl;
-					return max_cuts_level;
-				}
+				ok=sou(step-1,i);
+			}                               
+			else
+			{
+			      	ok=sou(step-1,1);
 			}
+			if(v[i]<lwh[1])
+				space-=v[i];
+			v[i]+=lwh[step];
+			if(ok==1)
+				return 1;
 		}
 	}
-	cout<<level<<"\t"<<flag<<"\t"<<max_cuts<<endl;
-	if(flag==true)
-		return max_cuts_level;
-	int cuts=find_max_cuts(level+1);
-	if(cuts>max_cuts_level)
-	{
-		max_cuts_level=cuts;
-		if(max_cuts_level>max_cuts)
-			max_cuts=max_cuts_level;
-	}
-	return max_cuts_level;
+	return 0;
 }
-int main() {
-	fin>>boards_len;
-	for(int i=1;i<=boards_len;i++)
-		fin>>boards[i];
-	fin>>rails_len;
-	for(int i=1;i<=rails_len;i++)
-		fin>>rails[i];
-	sort(rails,rails+rails_len);
-	for(int i=1;i<=rails_len;i++)
-		cout<<rails[i]<<endl;
-	fout<<find_max_cuts(1)<<endl;
-	cout<<c<<endl;
-	fin.close();
-	fout.close();
+int main()
+{
+	freopen("fence8.in","r",stdin);
+	freopen("fence8.out","w",stdout);
+	int i,j,k;
+	scanf("%d",&n);
+	for(i=1;i<=n;i++)
+	{
+		scanf("%d",&v[i]); 
+		sumv+=v[i];
+	}
+	scanf("%d",&m);
+	for(i=1;i<=m;i++)
+		scanf("%d",&lwh[i]);
+	//while(sumv<minlwh[m])m--;
+	qsort(&v[1],n,sizeof(v[1]),cmp);
+	qsort(&lwh[1],m,sizeof(lwh[1]),cmp);
+	for(i=1;i<=m;i++)
+		minlwh[i]=minlwh[i-1]+lwh[i];
+	l=0;r=m;mid=(l+r)/2;
+	while(l<=r)
+	{
+		space=0;
+		//for(i=1;i<=n;i++)
+			//v[i]=v[i]; 
+		if(sou(mid,1)==1)
+			l=mid+1;
+		else 
+			r=mid-1;
+		mid=(l+r)/2;
+	}
+	printf("%d\n",mid);
 	return 0;
 }
